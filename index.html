@@ -2,15 +2,43 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Karaoke Visualizer</title>
+<title>Stem Splitter</title>
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<h1>Karaoke Engine</h1>
+<h1>Stem Splitter & Karaoke Engine</h1>
 
-<audio id="vocals" controls src="../data/output/stems/vocals.wav"></audio>
+<!-- 1️⃣ File Upload Form -->
+<form id="uploadForm">
+  <label for="songInput">Song file (MP3 or WAV):</label>
+  <input type="file" id="songInput" accept=".mp3,.wav" required>
+  <br><br>
+  
+  <label for="lyricsInput">Lyrics file (optional, TXT or RTF):</label>
+  <input type="file" id="lyricsInput" accept=".txt,.rtf">
+  <br><br>
+  
+  <button type="submit">Process</button>
+</form>
+
+<hr>
+
+<!-- 2️⃣ Player & Visuals -->
+<h2>Vocals</h2>
+<audio id="vocals" controls></audio>
+
+<h2>Drums</h2>
+<audio id="kick" controls></audio>
+<audio id="snare" controls></audio>
+<audio id="hihat" controls></audio>
+
+<h2>MIDI / Notes</h2>
 <div id="midi-visual"></div>
+
+<h2>Lyrics</h2>
+<div id="lyrics-display"></div>
 
 <script src="main.js"></script>
 </body>
-</html
+</html>
+
