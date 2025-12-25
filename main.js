@@ -1,4 +1,12 @@
-document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+const uploadForm = document.getElementById('uploadForm');
+const vocalsPlayer = document.getElementById('vocals');
+const kickPlayer = document.getElementById('kick');
+const snarePlayer = document.getElementById('snare');
+const hihatPlayer = document.getElementById('hihat');
+const midiVisual = document.getElementById('midi-visual');
+const lyricsDisplay = document.getElementById('lyrics-display');
+
+uploadForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const formData = new FormData();
@@ -6,20 +14,40 @@ document.getElementById('uploadForm').addEventListener('submit', async (e) => {
     const lyricsFile = document.getElementById('lyricsInput').files[0];
     if (lyricsFile) formData.append('lyrics', lyricsFile);
 
-    // Send to backend for processing
-    const response = await fetch('/process', { method: 'POST', body: formData });
-    const files = await response.json(); // {vocals: "...", kick: "...", snare: "...", hihat: "...", midi: "...", lyrics: "..."}
+    // POST to Python server
+    const response = await fetch('/process', {
+        method: 'POST',
+        body: formData
+    });
 
-    // Update audio and MIDI sources dynamically
-    document.getElementById('vocals').src = files.vocals;
-    document.getElementById('kick').src = files.kick;
-    document.getElementById('snare').src = files.snare;
-    document.getElementById('hihat').src = files.hihat;
+    const data = await response.json();
+    if (data.error) {
+        alert(data.error);
+        return;
+    }
 
-    fetch(files.midi)
-      .then(res => res.arrayBuffer())
-      .then(arrayBuffer => {
-          console.log('MIDI loaded:', arrayBuffer.byteLength, 'bytes');
-          // render MIDI visualization
-      });
+    // Update audio sources
+    vocalsPlayer.src = data.vocals;
+    kickPlayer.src = data.kick;
+    snarePlayer.src = data.snare;
+    hihatPlayer.src = data.hihat;
+
+    // Load MIDI
+    if (data.midi) {
+        fetch(data.midi)
+            .then(res => res.arrayBuffer())
+            .then(arrayBuffer => {
+                console.log('MIDI loaded:', arrayBuffer.byteLength, 'bytes');
+                // TODO: render piano roll / karaoke highlights
+            });
+    }
+
+    // Load lyrics
+    if (data.lyrics) {
+        fetch(data.lyrics)
+            .then(res => res.json())
+            .then(json => {
+                lyricsDisplay.innerHTML = json.map(word => `<span>${word.text}</span>`).join(' ');
+            });
+    }
 });
