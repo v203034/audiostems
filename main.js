@@ -17,10 +17,7 @@ uploadForm.addEventListener('submit', async (e) => {
     // Use the ngrok URL printed by Colab
     const NGROK_URL = "https://alba-artiest-raelene.ngrok-free.dev";
 
-    const response = await fetch(`${NGROK_URL}/process`, {
-        method: 'POST',
-        body: formData
-    });
+    const response = await fetch(`${NGROK_URL}/process`, { method: 'POST', body: formData });
 
     const data = await response.json();
     if (data.error) {
