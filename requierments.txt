@@ -1,0 +1,9 @@
+torch
+torchaudio
+demucs
+librosa
+numpy
+scipy
+soundfile
+pretty_midi
+openai-whisper
